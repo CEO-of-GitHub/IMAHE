@@ -20,26 +20,36 @@ import matplotlib.patches as mpatches
 from skimage.morphology import label
 from picamera import PiCamera
 import time
+import getch
 
 
+imgPath = "microplastics4.jpg"
+#imgPath = "circletest.png"
+#imgPath = "frog s blood cells under 400x microscope.jpg"
+#imgPath = 'C:/Users/Amirber/Documents/pm25/farc_snd6_(c6).jpg'
+#imgPath = "test2.jpg"
 
 camera = PiCamera()
+
 
 # Set camera settings
 camera.resolution = (1920, 1080)
 camera.framerate = 15
 
 camera.start_preview()
-time.sleep(30)
-camera.capture("microplastics2.jpg") 
-camera.stop_preview()  
+#time.sleep()
+
+while True:
+    inp = getch.getch()
+    if inp == ' ':
+        break
+
+camera.capture(imgPath) 
+camera.stop_preview()
+camera.close()  
 
 
-#imgPath = "circletest.png"
-imgPath = "microplastics2.jpg"
-#imgPath = "frog s blood cells under 400x microscope.jpg"
-#imgPath = 'C:/Users/Amirber/Documents/pm25/farc_snd6_(c6).jpg'
-#imgPath = "test2.jpg"
+
 
 # Insert a um to pixel conversion ratio
 um2pxratio = float(1000 / 680)
@@ -73,21 +83,24 @@ cv2.destroyAllWindows()
 
 #cropped_img = image[825:1125,500:700]
 image = image[350:850,750:1250]
-
+#image = image[250:750,625:1125]
+#image = image[210:710,700:1200]
+#image = image[210:710,600:1100]
 
 # SCIKIT IMAGE FILTER FUNCTIONS:
 
 # GAMMA 
-image = exposure.adjust_gamma(image, 1.65) # ideal value: 1.65
+image = exposure.adjust_gamma(image, 1.75) # ideal value: 1.5-1.75
 
 # LOGARITHMIC
-image = exposure.adjust_log(image,1.2) # ideal value: 1.25
+image = exposure.adjust_log(image,1.25) # ideal value: 1.1-1.25
 
 # DENOISE
-image = restoration.denoise_tv_chambolle(image,weight=0.2) # ideal value: 0.2
+image = restoration.denoise_tv_chambolle(image,weight=0.1) # ideal value: 0.1-0.2
 
 # Show whole image
-io.imshow(image)
+#io.imshow(image)
+#plt.show()
 
 
 
@@ -95,31 +108,35 @@ io.imshow(image)
 
 
 #Show histogram
+"""
 values, bins = np.histogram(image,
                             bins=np.arange(256))
 plt.figure()
 plt.plot(bins[:-1], values)
 plt.title("Image Histogram")
-plt.show()
+#plt.show()
+"""
 
 # Calculate Sobel edges
 edges_sob = filters.sobel(image)
 io.imshow(edges_sob)
-
+plt.show()
 
 # Show histogram of non-zero Sobel edges
+"""
 values, bins = np.histogram(np.nonzero(edges_sob) ,
                             bins=np.arange(1000))
 plt.figure()
 plt.plot(bins[:-1], values)
 plt.title("Use Histogram to select thresholding value")
 plt.show()
+"""
 
 # Using a threshold to binarize the images, condider replacing with an adaptice
 # criteria. raing the TH to 0.03 will remove the two touching particles but will 
 # cause larger particles to split.
 edges_sob_filtered = np.where(edges_sob>0.02,255,0)
-io.imshow(edges_sob_filtered)
+#io.imshow(edges_sob_filtered)
 
 #Use label on binary Sobel edges to find shapes
 label_image = label(edges_sob_filtered)
@@ -133,7 +150,7 @@ sizeTh=4
 
 
 
-areaThmin = 1000 # ideal value: 1000
+areaThmin = 100 # ideal value: 1000
 #areaThmax = 100000
 #region.area_bbox > areaThmin and region.area_bbox < areaThmax
 
@@ -165,12 +182,15 @@ sortRegions = sorted(sortRegions, reverse=True)
 particleSize = [size[0] for size in sortRegions]
 
 #Show histogram of non-zero Sobel edges
+"""
 plt.figure()
 plt.plot(np.multiply(np.power(um2pxratio,2), particleSize),linewidth=2)
 plt.xlabel('Particle count',fontsize=14)
 plt.ylabel('Particle area',fontsize=14)
 plt.title("Particle area distribution",fontsize=16)
+"""
 plt.show()
+
 
 #Show 5 largest regions location, image and edge
 for region in sortRegions[:5]:
@@ -239,4 +259,3 @@ for region in sortRegions[-5:]:
 
 # ADDED CODE REFERENCES:
 # https://scikit-image.org/docs/stable/api/skimage.exposure.html#skimage.exposure.adjust_gamma
-# 
