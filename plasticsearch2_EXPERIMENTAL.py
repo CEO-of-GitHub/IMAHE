@@ -133,9 +133,9 @@ plt.show()
 """
 
 # Using a threshold to binarize the images, condider replacing with an adaptice
-# criteria. raing the TH to 0.03 will remove the two touching particles but will 
+# criteria. Raising the TH to 0.03 will remove the two touching particles but will 
 # cause larger particles to split.
-edges_sob_filtered = np.where(edges_sob>0.02,255,0)
+edges_sob_filtered = np.where(edges_sob>0.02,255,0) # SYNTAX : np.where(variable of condition (if array, function will go through and append each value), if condition true, if condition false)
 #io.imshow(edges_sob_filtered)
 
 #Use label on binary Sobel edges to find shapes
