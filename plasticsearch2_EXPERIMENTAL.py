@@ -228,7 +228,19 @@ for region in sortRegions[:5]:
             # if: found pythagorean c is larger than previous largest pythagorean c
                 # replace largest pythagorean c variable
         
+    sobel_image = edges_sob_filtered[minr:maxr,minc:maxc]
+    sobel_edges = []
+    for pixel in sobel_image:
+        if sobel_image(:, :, 1) == 255 and sobel_image(:, :, 2) == 255 and sobel_image(:, :, 3):
+            sobel_edges.append(pixel)
+    print(sobel_edges)
+    [k, av] = convhull(sobel_edges)
+    for conv_edge in sobel_edges:
+        
     
+    RedChannel = rgbImage(:, :, 1)
+    GreenChannel = rgbImage(:, :, 2)
+    BlueChannel = rgbImage(:, :, 3)
     
         
     plt.show()
