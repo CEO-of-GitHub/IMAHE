@@ -23,6 +23,7 @@ import getch
 
 
 imgPath = "microplastics3.jpg"
+#imgPath = "imahe test.png"
 #imgPath = "whitescreen.jpg"
 #imgPath = "circletest.png"
 #imgPath = "frog s blood cells under 400x microscope.jpg"
@@ -255,7 +256,7 @@ for region in sortRegions[:5]:
     
 
 
-    # 1: Find the coordinates of all white pixels outside the range of  "rect_limit"
+    # 1: Find the coordinates of all white pixels
     # 2: Perform pythagorean calculations on all possible combinations of the white pixels to find the longest length
 
 
@@ -309,6 +310,7 @@ for region in sortRegions[:5]:
                 if len(ll_coords) != 0:
                     ll_coords.pop(0)
                 ll_coords.append(coords_used)
+                #print(longest_length)
             
             j += 1
         i += 1
@@ -322,7 +324,8 @@ for region in sortRegions[:5]:
     # DRAW RED LINE ON LONGEST LENGTH COORDINATES
     ax[2].text(0.075*(maxc - minc), 0.87*(maxr - minr), # the plotted line shown is not the measurement of longest length of microplastic particle, but rather an arbitrarily placed line on the image which serves as a measuring stick for the conversion of pixels to um. "[0.1*(maxc - minc), 0.3*(maxc - minc)" refers to the measure of the line which is plotted in the image while "str(round(0.2*(maxc - minc)*um2pxratio,1))+'um'" is the text that shows its measurements
           'longest length: '+str(round(longest_length*um2pxratio))+'um',
-          color='red', fontsize=12, horizontalalignment='left') 
+          color='red', fontsize=12, horizontalalignment='left')
+    ax[2].plot([ll_coords[0][0][1],ll_coords[0][1][1]],[ll_coords[0][0][0],ll_coords[0][1][0]],'r')
 
 
 
